@@ -1,0 +1,31 @@
+# Secrets
+.env
+.env.local
+secrets.py
+config.local.*
+*.key
+*.pem
+
+# Logs & Generated Reports
+*.log
+Scripts/Guvenlik_Raporu_*.html
+Guvenlik_Raporu_*.html
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+dist/
+*.egg-info/
