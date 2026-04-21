@@ -54,7 +54,7 @@ pip install -r requirements.txt
 
 ```bash
 copy .env.example .env
-# .env içine TELEGRAM_TOKEN ve CHAT_ID değerlerini yaz
+# .env içine TELEGRAM_TOKEN ve CHAT_ID değerlerini yaz.
 ```
 
 > BotFather ile bot oluştur, Chat ID için @userinfobot'u kullan.
