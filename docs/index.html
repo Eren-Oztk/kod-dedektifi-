@@ -70,6 +70,7 @@
     .btn:hover { opacity: 0.82; }
     .btn-primary { background: #007acc; color: #fff; }
     .btn-outline { background: transparent; color: #c9d1d9; border: 1px solid #30363d; }
+    .btn-sm { padding: 6px 14px; font-size: 12px; }
 
     /* Terminal block */
     .terminal {
@@ -79,6 +80,7 @@
       max-width: 680px;
       margin: 60px auto 0;
       overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     .terminal-bar {
@@ -93,17 +95,49 @@
     .dot-r { background: #ff5f57; }
     .dot-y { background: #febc2e; }
     .dot-g { background: #28c840; }
+    .window-title { color: #6b7280; font-size: 12px; margin-left: 10px; font-family: sans-serif; }
 
     .terminal-body {
       padding: 22px 26px;
       font-size: 14px;
       line-height: 1.8;
+      text-align: left;
     }
 
     .prompt { color: #007acc; }
     .cmd { color: #c9d1d9; }
     .out { color: #6b7280; }
     .ok { color: #28c840; }
+
+    /* --- Interactive Demo Styles --- */
+    .demo-container { max-width: 800px; margin: 60px auto; height: 400px; display: flex; flex-direction: column; }
+    .demo-screen { flex: 1; position: relative; overflow-y: auto; }
+    .view { display: none; padding: 20px; animation: fadeIn 0.3s; }
+    .view.active { display: block; }
+    
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    .demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+    .demo-app-card { background: #161b22; border: 1px solid #30363d; padding: 20px; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.2s; }
+    .demo-app-card:hover { border-color: #007acc; background: #1f242c; transform: translateY(-2px); }
+    .demo-app-icon { font-size: 2rem; margin-bottom: 10px; }
+    .demo-app-name { color: #fff; font-weight: bold; font-size: 14px; }
+
+    /* App Specific Styles */
+    .sys-bar-bg { background: #21262d; width: 100%; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 5px; }
+    .sys-bar { height: 100%; transition: width 0.5s ease, background-color 0.5s ease; }
+    
+    .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
+    .search-input { flex: 1; background: #080c10; border: 1px solid #30363d; color: #fff; padding: 10px 15px; border-radius: 6px; font-family: inherit; outline: none; }
+    .search-input:focus { border-color: #007acc; }
+    .search-results { background: #161b22; border-radius: 6px; padding: 10px; font-size: 13px; }
+    .result-item { padding: 8px; border-bottom: 1px solid #30363d; display: flex; justify-content: space-between; }
+    .result-item:last-child { border-bottom: none; }
+    .match-text { color: #007acc; }
+
+    .wifi-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 15px; }
+    .wifi-table th, .wifi-table td { padding: 10px; text-align: left; border-bottom: 1px solid #30363d; }
+    .wifi-table th { color: #fff; background: #161b22; }
 
     /* Tools grid */
     section {
@@ -197,24 +231,95 @@
     <a href="https://github.com/Eren-Oztk/kod-dedektifi" class="btn btn-primary">GitHub'da Gör</a>
     <a href="https://github.com/Eren-Oztk/kod-dedektifi/releases" class="btn btn-outline">İndir</a>
   </div>
+</header>
 
-  <div class="terminal">
+<section style="margin-top: 40px; margin-bottom: 40px;">
+  <h2>// <span>Arayüzü Dene</span></h2>
+  <div class="terminal demo-container">
     <div class="terminal-bar">
       <div class="dot dot-r"></div>
       <div class="dot dot-y"></div>
       <div class="dot dot-g"></div>
+      <span class="window-title" id="window-title">Launcher.py</span>
     </div>
-    <div class="terminal-body">
-      <div><span class="prompt">$</span> <span class="cmd">git clone https://github.com/Eren-Oztk/kod-dedektifi</span></div>
-      <div><span class="out">Cloning into 'kod-dedektifi'...</span></div>
-      <div><span class="prompt">$</span> <span class="cmd">pip install -r requirements.txt</span></div>
-      <div><span class="ok">✓ All packages installed</span></div>
-      <div><span class="prompt">$</span> <span class="cmd">pythonw Launcher.py</span></div>
-      <div><span class="ok">✓ Launcher started</span></div>
+    
+    <div class="demo-screen">
+      
+      <div id="view-launcher" class="view active">
+        <div style="text-align: center; color: #6b7280; margin-bottom: 10px;">Çalıştırmak istediğiniz aracı seçin</div>
+        <div class="demo-grid">
+          <div class="demo-app-card" onclick="openApp('sistem', 'Sistem_Gozu.exe')">
+            <div class="demo-app-icon">💻</div>
+            <div class="demo-app-name">Sistem Gözü</div>
+          </div>
+          <div class="demo-app-card" onclick="openApp('dosya', 'codeSearch.py')">
+            <div class="demo-app-icon">🔍</div>
+            <div class="demo-app-name">Dosya Dedektifi</div>
+          </div>
+          <div class="demo-app-card" onclick="openApp('wifi', 'wifi_pass.py')">
+            <div class="demo-app-icon">📶</div>
+            <div class="demo-app-name">WiFi Şifreleri</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="view-sistem" class="view">
+        <button class="btn btn-outline btn-sm" onclick="goHome()">← Menüye Dön</button>
+        <h3 style="margin: 20px 0; color: #fff;">💻 Sistem Gözü (Canlı İzleme)</h3>
+        
+        <div style="margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between;"><span>CPU Kullanımı</span><span id="cpu-val">%45</span></div>
+          <div class="sys-bar-bg"><div id="cpu-bar" class="sys-bar" style="width: 45%; background: #28c840;"></div></div>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between;"><span>RAM Bellek</span><span id="ram-val">%60</span></div>
+          <div class="sys-bar-bg"><div id="ram-bar" class="sys-bar" style="width: 60%; background: #febc2e;"></div></div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between;"><span>Disk Okuma/Yazma</span><span id="disk-val">12 MB/s</span></div>
+          <div class="sys-bar-bg"><div id="disk-bar" class="sys-bar" style="width: 15%; background: #007acc;"></div></div>
+        </div>
+      </div>
+
+      <div id="view-dosya" class="view">
+        <button class="btn btn-outline btn-sm" onclick="goHome()">← Menüye Dön</button>
+        <h3 style="margin: 20px 0; color: #fff;">🔍 İçerik Arama</h3>
+        
+        <div class="search-box">
+          <input type="text" id="demo-search-input" class="search-input" placeholder="Aranacak kelime (örn: import os, def init...)" onkeyup="if(event.key === 'Enter') performSearch()">
+          <button class="btn btn-primary" onclick="performSearch()">Ara</button>
+        </div>
+
+        <div id="search-results-container" class="search-results" style="display: none;">
+          </div>
+      </div>
+
+      <div id="view-wifi" class="view">
+        <button class="btn btn-outline btn-sm" onclick="goHome()">← Menüye Dön</button>
+        <h3 style="margin: 20px 0; color: #fff;">📶 Kayıtlı Ağlar</h3>
+        
+        <table class="wifi-table">
+          <thead>
+            <tr>
+              <th>SSID (Ağ Adı)</th>
+              <th>Şifre</th>
+              <th>Güvenlik</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Ev_Agi_5G</td><td class="ok">dsmar12345!</td><td>WPA2</td></tr>
+            <tr><td>Kafedeki_Ag</td><td class="ok">kahve123</td><td>WPA2</td></tr>
+            <tr><td>Misafir_Network</td><td class="ok">hosgeldiniz99</td><td>WPA3</td></tr>
+            <tr><td>Eren_iPhone</td><td class="ok">erenhotspot1</td><td>WPA2</td></tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
   </div>
-</header>
-
+</section>
 <section>
   <h2>// <span>Araçlar</span></h2>
   <div class="grid">
@@ -273,17 +378,105 @@
 
 <div class="install">
   <h2>// <span>Kurulum</span></h2>
-  <div class="code-block">
-    <div><span class="ln">1</span><span class="kw">git</span> clone https://github.com/Eren-Oztk/kod-dedektifi</div>
-    <div><span class="ln">2</span><span class="kw">cd</span> kod-dedektifi</div>
-    <div><span class="ln">3</span><span class="kw">pip</span> install -r requirements.txt</div>
-    <div><span class="ln">4</span><span class="kw">pythonw</span> Launcher.py</div>
+  
+  <div class="terminal" style="margin: 0 auto 30px; border-radius: 8px;">
+    <div class="terminal-bar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <span class="window-title">bash</span>
+    </div>
+    <div class="terminal-body">
+      <div><span class="prompt">$</span> <span class="cmd">git clone https://github.com/Eren-Oztk/kod-dedektifi</span></div>
+      <div><span class="out">Cloning into 'kod-dedektifi'...</span></div>
+      <div><span class="prompt">$</span> <span class="cmd">pip install -r requirements.txt</span></div>
+      <div><span class="ok">✓ All packages installed</span></div>
+      <div><span class="prompt">$</span> <span class="cmd">pythonw Launcher.py</span></div>
+      <div><span class="ok">✓ Launcher started</span></div>
+    </div>
   </div>
+
 </div>
 
 <footer>
   <p>Built by <a href="https://github.com/Eren-Oztk">Eren-Oztk</a> &nbsp;·&nbsp; MIT License</p>
 </footer>
+
+<script>
+  let sysInterval;
+
+  // Uygulama Değiştirici
+  function openApp(appId, title) {
+    document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+    document.getElementById('view-' + appId).classList.add('active');
+    document.getElementById('window-title').innerText = title;
+
+    // Sistem Gözü açıldıysa rastgele veri döngüsünü başlat
+    if (appId === 'sistem') {
+      updateSystemStats(); // ilk veriyi hemen çek
+      sysInterval = setInterval(updateSystemStats, 1500);
+    } else {
+      clearInterval(sysInterval);
+    }
+  }
+
+  // Ana Menüye Dönüş
+  function goHome() {
+    document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+    document.getElementById('view-launcher').classList.add('active');
+    document.getElementById('window-title').innerText = 'Launcher.py';
+    clearInterval(sysInterval);
+  }
+
+  // Sistem Gözü Animasyonları
+  function updateSystemStats() {
+    const cpu = Math.floor(Math.random() * 60) + 10; // %10 - %70 arası
+    const ram = Math.floor(Math.random() * 40) + 40; // %40 - %80 arası
+    const disk = Math.floor(Math.random() * 50);
+
+    const getColor = (val) => val > 75 ? '#ff5f57' : (val > 50 ? '#febc2e' : '#28c840');
+
+    document.getElementById('cpu-bar').style.width = cpu + '%';
+    document.getElementById('cpu-bar').style.backgroundColor = getColor(cpu);
+    document.getElementById('cpu-val').innerText = '%' + cpu;
+
+    document.getElementById('ram-bar').style.width = ram + '%';
+    document.getElementById('ram-bar').style.backgroundColor = getColor(ram);
+    document.getElementById('ram-val').innerText = '%' + ram;
+
+    document.getElementById('disk-bar').style.width = (disk * 2) + '%';
+    document.getElementById('disk-val').innerText = disk + ' MB/s';
+  }
+
+  // Dosya Dedektifi Sahte Arama
+  function performSearch() {
+    const input = document.getElementById('demo-search-input').value;
+    const container = document.getElementById('search-results-container');
+    
+    if(!input.trim()) return;
+
+    container.style.display = 'block';
+    container.innerHTML = '<div style="color: #6b7280; text-align:center;">Aranıyor...</div>';
+
+    setTimeout(() => {
+      container.innerHTML = `
+        <div style="margin-bottom: 10px; color: #6b7280; font-size: 12px;">"${input}" için 3 sonuç bulundu (0.12sn)</div>
+        <div class="result-item">
+          <div><span style="color: #c9d1d9;">Launcher.py</span> <span style="color:#6b7280;">(Satır 42)</span></div>
+          <div style="color: #8b949e;">... app_run( <span class="match-text">${input}</span> ) ...</div>
+        </div>
+        <div class="result-item">
+          <div><span style="color: #c9d1d9;">utils/helpers.py</span> <span style="color:#6b7280;">(Satır 18)</span></div>
+          <div style="color: #8b949e;">def check_val( <span class="match-text">${input}</span> ): ...</div>
+        </div>
+        <div class="result-item">
+          <div><span style="color: #c9d1d9;">config.json</span> <span style="color:#6b7280;">(Satır 5)</span></div>
+          <div style="color: #8b949e;">"default_query": "<span class="match-text">${input}</span>"</div>
+        </div>
+      `;
+    }, 600);
+  }
+</script>
 
 </body>
 </html>
